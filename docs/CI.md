@@ -7,8 +7,9 @@
                                                  
  git tag FixPatch21 / old-ui-18-13               
  git push origin <タグ>                          
-   └─ dispatch-build.yml(数秒)──起動──→  release.yml(tag = そのタグ)
-                                                   ├─ resolve  … FixPatch → master 系 / old-ui → old-ui 系
+   └─ dispatch-build.yml(数秒)──起動──→  release-fixpatch.yml / release-old-ui.yml(タグの頭で選ぶ)
+                                                 └─ _release.yml(tag = そのタグ)
+                                                   ├─ resolve  … タグと系統が合っているかの確認
                                                    ├─ _android.yml(ubuntu)      … 新署名版 + ZipSigner版 APK
                                                    ├─ _windows.yml(windows)     … .exe / .msi   ※master 系のみ
                                                    ├─ _ios.yml(macos-26-intel)  … 未署名 IPA    ※master 系のみ
@@ -19,6 +20,8 @@
 - 本体のソースは読み取り専用トークンで**タグの時点**を取得する。old-ui のタグは old-ui ブランチのコミットに付いているので、
   特別な指定なしに old-ui のソースになる。
 - `dispatch-build.yml` は **master と old-ui の両方のブランチ**に置く(タグの付いたコミットに無いと動かない)。
+- 呼び口を系統ごとに分けているのは README の Build バッジのため(バッジは workflow ファイル単位でしか取れない)。
+  中身は `_release.yml` 1本。
 
 ## リリースの手順
 
@@ -37,7 +40,7 @@
    git push origin old-ui-18-13
    ```
 
-3. futabaviewer-build の **Actions → Release** で進み具合を見る。終わると **Releases** にタグ名で添付される。
+3. futabaviewer-build の **Actions → Release FixPatch / Release old-ui** で進み具合を見る。終わると **Releases** にタグ名で添付される。
 4. APK は今まで通り **実機で確認してから**告知する(R8 由来の不具合は CI では分からない)。
 
 ### 手動で動かす / やり直す
